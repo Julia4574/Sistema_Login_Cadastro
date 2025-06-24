@@ -1,30 +1,100 @@
-Explicação Detalhada:
-1. Classe Database:
-Objetivo: Centralizar a lógica de conexão com o banco de dados.
+ Sistema de Login e Cadastro
+1 Introdução
+Nome do Projeto: Sistema de Login e Cadastro
 
-Encapsulamento: As configurações (host, nome do banco, etc.) são privadas para evitar acesso externo direto.
+Descrição: Aplicação web que permite o cadastro e login de usuários com armazenamento de dados em banco MySQL.
 
-2. Propriedades:
-$host: Endereço do servidor (geralmente localhost em ambiente local). $db_name: Nome do banco de dados (sistema_login). $username e $password: Credenciais de acesso (usuário root com senha root é comum em ambientes de desenvolvimento). $conn: Armazena o objeto PDO após a conexão.
+Tecnologias Utilizadas: PHP (com PDO), MySQL, CSS, HTML.
 
-3. Método getConnection():
-Reinicialização: $this->conn = null garante que não haja conexões antigas.
+Autor: Júlia Carla do Carmo Júlio, Paula Maria da Rocha Celidorio
 
-Bloco try: -> Cria uma conexão PDO usando a string de conexão (mysql:host=...;dbname=...). -> Define PDO::ERRMODE_EXCEPTION para que erros gerem exceções (facilita a depuração).
+Data de início: 23/06/2025
 
-Bloco catch: -> Captura exceções do tipo PDOException (erros de conexão ou configuração). -> die() interrompe a execução e exibe a mensagem de erro (útil para desenvolvimento, mas evite em produção).
+2 Estrutura do Projeto
+Login/
+│
+├── config/
+│   └── Database.php           # Classe de conexão PDO com o banco de dados
+│
+├── models/
+│   ├── Usuario.php            # Modelo da entidade Usuário
+│   └── UsuarioDAO.php         # Objeto de acesso a dados do usuário
+│
+├── public/
+│   ├── cadastrar_usuario.php   # Lógica de cadastro do usuário
+│   └── process_login.php      # Lógica de login do usuário
+│
+├── utils/
+│   └── Sanitizacao.php        # Classe utilitária para sanitização de dados
+│
+└── README.md
 
-Retorno: Devolve a conexão PDO ativa para ser utilizada em consultas.
+3 Configuração do Ambiente
+Requisitos
+Servidor Apache ou Nginx com suporte PHP
 
-Boas Práticas:
-Segurança: Usar PDO com prepared statements previne SQL Injection.
+VisualStudio Code 1.76.2
 
-Tratamento de Erros: Exceções permitem identificar problemas rapidamente.
+PHP 8.2
 
-Reusabilidade: A classe pode ser instanciada em qualquer parte do sistema para obter a conexão.
+MySQL 8.0.36
 
-O que é PDO?
-Camada de Abstração de Banco de Dados:
--> O PDO permite interagir com diferentes bancos de dados (MySQL, PostgreSQL, SQLite, etc.) usando uma sintaxe única. Isso significa que, se você migrar de MySQL para outro banco no futuro, apenas a string de conexão precisará ser ajustada, e não todo o código de interação com o banco.
+XAMPP (ambiente local)
 
-Orientado a Objetos: O PDO é uma classe nativa do PHP, e sua utilização segue o paradigma de orientação a objetos, tornando o código mais organizado e moderno.
+Instalação
+Configure o Banco de Dados:
+
+Crie um banco chamado login no MySQL.
+
+Execute o seguinte SQL para criar a tabela:
+
+sql
+
+CREATE TABLE IF NOT EXISTS usuario (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(45) NOT NULL UNIQUE,
+    senha_hash VARCHAR(450) NOT NULL,
+
+);
+Configure o acesso ao banco:
+
+No arquivo config/Database.php, ajuste as credenciais se necessário:
+
+
+private $host = 'localhost';
+private $db_name = 'login';
+private $username = 'root';
+private $password = '&tec77@info!';
+Execute o servidor PHP:
+
+
+
+4 Estrutura do Banco de Dados
+sql
+
+CREATE TABLE usuario (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  senha_hash VARCHAR(255) NOT NULL,
+
+);
+
+5 Segurança e Boas Práticas
+Uso de PDO com prepared statements (proteção contra SQL Injection)
+
+Senhas criptografadas com password_hash()
+
+Validação e sanitização dos dados com a classe Sanitizacao
+
+
+6 Testes
+Testes manuais:
+
+Cadastro de usuário
+
+Login com credenciais corretas
+
+Redirecionamento após login bem-sucedido
+
